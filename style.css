@@ -1,0 +1,16 @@
+@font-face {
+  font-family: "Digital-7";
+  src: url('digital-7.regular.ttf');
+}
+
+#streak {
+  font-family: 'Digital-7';
+  font-size: 40px;
+  color: red;
+}
+
+h1 {
+  font-family: 'Digital-7';
+  font-size: 50px;
+  color: red;
+}
