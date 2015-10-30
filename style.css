@@ -1,3 +1,25 @@
+body {
+  background: url('images/background.jpg') no-repeat center center fixed;
+  background-size: cover;
+  overflow: hidden;
+}
+
+#container {
+  height: 800px;
+  width: 800px;
+
+  margin: 0 auto;
+}
+
+#board {
+  display: block;
+  margin: auto;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
 @font-face {
   font-family: "Digital-7";
   src: url('digital-7.regular.ttf');
@@ -10,10 +32,18 @@
 }
 
 #logo {
-  font-size: 48px;
+  font-family: 'Righteous', cursive;
+  font-size: 52px;
+  color: rgb(208,209,208);
 }
+
+.textButtons {
+  font-family: 'Hind', sans-serif;
+  font-size: 13px;
+}
+
 h1 {
   font-family: 'Digital-7';
   font-size: 50px;
-  color: red;
+  color: rgb(208,209,208);
 }
