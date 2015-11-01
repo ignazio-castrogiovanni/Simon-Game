@@ -1,8 +1,11 @@
 <head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <link href='https://fonts.googleapis.com/css?family=Righteous' rel='stylesheet' type='text/css'>
   <link href='https://fonts.googleapis.com/css?family=Hind:500' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" type="text/css" href="style.css">
 </head>
+
+<body>
 <div id = "container">
 <svg id = "board" height="640" width="640">
   <!--<path d = "M 320 320
@@ -17,6 +20,16 @@
 <filter id="f1" x="0" y="0">
       <feGaussianBlur in="SourceGraphic" stdDeviation="1" />
     </filter>
+
+
+<filter id="brighten">
+  <feGaussianBlur in="SourceGraphic" stdDeviation="1" />
+  <feComponentTransfer>
+    <feFuncR type="linear" slope="100"/>
+    <feFuncG type="linear" slope="100"/>
+    <feFuncB type="linear" slope="100"/>
+  </feComponentTransfer>
+</filter>
 
   // Main circle
   <path d = "M 90 320
@@ -44,10 +57,10 @@
 
 
   // 'new' text
-  <text  class = "textButtons" x = "264.5" y = "330" fill = "#151515">new</text>
+  <text  class = "textButtons noselect" x = "264.5" y = "330" fill = "#151515">new</text>
 
   // 'strict' text
-  <text  class = "textButtons" x = "352.5" y = "330" fill = "#151515">strict</text>
+  <text  class = "textButtons noselect" x = "352.5" y = "330" fill = "#151515">strict</text>
 
   // Start game
   <path d = "M291 345
@@ -77,32 +90,37 @@
             L 290 395
             L 290 365
             " fill = "#42000a"/>
- <text id = "streak" x = "304" y = "393" fill = "#FF0000" >--</text>
- <text id = "logo" x = "250" y = "298" fill = "#D0D1D0">simon</text>
+ <text class = "noselect" id = "streak" x = "304" y = "393" fill = "#FF0000" >--</text>
+ <text class = "noselect" id = "logo" x = "250" y = "298" fill = "#D0D1D0">simon</text>
 
   // Green pad
   <path id="greenPad" class = "clickable" d="M 210 310
                          L 110 310
                          A 210 210, 0, 0, 1, 310 110
                          L 310 210
-                         A 110 110, 0, 0, 0, 210 310" stroke="black" fill="green" filter="url(#f1)"/>
+                         A 110 110, 0, 0, 0, 210 310" stroke="black" isOn = "false" fill="green" filter="url(#f1)"/>
   // Red pad
   <path id="redPad" class = "clickable" d="M 330 210
                        L 330 110
                        A 210 210, 0, 0, 1, 530 310
                        L 430 310
-                       A 110 110, 0, 0, 0, 330 210" stroke="black" fill="red" filter="url(#f1)" />
+                       A 110 110, 0, 0, 0, 330 210" stroke="black" isOn = "false" fill="#7D1F00" filter="url(#f1)" />
 // Blue pad
   <path id="bluePad" class = "clickable" d="M 430 330
                         L 530 330
                         A 210 210, 0, 0, 1, 330 530
                         L 330 430
-                        A 110 110, 0, 0, 0, 430 330" stroke="black" fill="blue" filter="url(#f1)"/>
+                        A 110 110, 0, 0, 0, 430 330" stroke="black" isOn = "false" fill="#000080" filter="url(#f1)"/>
 // Yellow pad
   <path id="yellowPad" class = "clickable" d="M 310 430
                           L 310 530
                           A 210 210, 0, 0, 1, 110 330
                           L 210 330
-                          A 110 110, 0, 0, 0, 310 430" stroke="black" fill="yellow" filter="url(#f1)"/>
+                          A 110 110, 0, 0, 0, 310 430" stroke="black" isOn = "false" fill="#CCCC00" filter="url(#f1)"/>
+
 </svg>
 </div>
+
+<!-- Load script  -->
+<script src = "main.js"> </script>
+</body>
