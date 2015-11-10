@@ -35,7 +35,7 @@ body {
 }
 
 #streak {
-  font-family: 'Digital-7';
+  font-family: 'Digital-7', monospace;
   font-size: 40px;
   color: red;
 }
@@ -44,6 +44,11 @@ body {
   font-family: 'Righteous', cursive;
   font-size: 52px;
   color: rgb(208,209,208);
+}
+
+#start:active {
+    vertical-align: top;
+    padding: 8px 13px 6px;
 }
 
 .textButtons {

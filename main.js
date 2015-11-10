@@ -3,13 +3,18 @@
 
   var movesPattern = [];
   var teachingTime, currentPatternIndex, currentLevel;
-  initVars();
+  var strictMode = false;
 
-  var userTime = 10000;
+  var userTime = 5000;
   var padIds = ['redPad', 'greenPad', 'bluePad', 'yellowPad'];
   var userEnabled = true;
   var userTimeout;
 
+  // Sounds
+  var audio1 = new Audio('sounds/simonSound1.mp3');
+  var audio2 = new Audio('sounds/simonSound2.mp3');
+  var audio3 = new Audio('sounds/simonSound3.mp3');
+  var audio4 = new Audio('sounds/simonSound4.mp3');
 
   var board = document.getElementById('board');
 
@@ -22,7 +27,7 @@ function initVars() {
     movesPattern = [];
     teachingTime = 2500;
     currentPatternIndex = 0;
-    currentLevel = 0;
+    currentLevel = 1;
 }
 
   function onButtonPressed(e) {
@@ -32,7 +37,20 @@ function initVars() {
     }
     var SVGPath = e.target;
     if (SVGPath.id === 'start') {
+      initVars();
       startGame();
+    } else if (SVGPath.id === 'strict') {
+      if (e.type === "mouseup") {
+        return;
+      }
+      var strictLed = document.getElementById('strictLed');
+      if(strictMode === false) {
+        strictMode = true;
+        strictLed.setAttribute('fill', 'red');
+      } else {
+        strictMode = false;
+        strictLed.setAttribute('fill', '#42000a');
+      }
     } else { // Pad pressed
       var SVGElemClasses = SVGPath.classList;
       if(SVGElemClasses.contains('clickable'))
@@ -43,8 +61,7 @@ function initVars() {
           // OK right move - Restart the timeout
           clearTimeout(userTimeout);
           userTimeout = setTimeout(function(){
-            alert('fail');
-            loopGame(null);
+            showAndHandleError();
           }, userTime);
 
           if (currentPatternIndex === movesPattern.length - 1) {
@@ -62,16 +79,11 @@ function initVars() {
         } else {
           // Wrong move
           //alert('Wrong move');
-          showError();
+          showAndHandleError();
 
           // Clear timeout
           clearTimeout(userTimeout);
 
-          // Reinitiliase variables
-          initVars();
-
-          // Restart loop
-          loopGame(null);
         }
       }
     }
@@ -85,15 +97,19 @@ function initVars() {
     switch (pathId) {
       case 'redPad':
         newColor = (isOn === 'true') ? '#7D1F00' : 'red';
+        audio1.play();
       break;
       case 'greenPad':
         newColor = (isOn === 'true') ? 'green' : '#00F700';
+        audio2.play();
       break;
       case 'bluePad':
         newColor = (isOn === 'true') ? '#000080' : 'blue';
+        audio3.play();
       break;
       case 'yellowPad':
         newColor = (isOn === 'true') ? '#CCCC00' : 'yellow';
+        audio4.play();
       break;
       default:
     }
@@ -108,10 +124,10 @@ function initVars() {
 
   function startGame() {
     console.log("startGame");
-    // Clear moves pattern
-    movesPattern = [];
+    initVars();
+
     var levelIndic = document.getElementById('streak');
-    levelIndic.innerHTML = '00';
+    levelIndic.innerHTML = '01';
     // Choose the fisrt move to the moves pattern
     var firstMove = Math.floor(Math.random() * 4);
     // Loop game with first move
@@ -125,11 +141,11 @@ function initVars() {
       // Add move to the moves pattern
       movesPattern.push(move);
     }
-    // Show the moves pattern to the user
-    showPattern();
-
     // Disable user moves until the show is on.
     userEnabled = false;
+
+    // Show the moves pattern to the user
+    showPattern();
 
     // Wait for user moves
     //waitForUserMoves();
@@ -138,8 +154,7 @@ function initVars() {
   function waitForUserMoves() {
     console.log("waitForUserMoves");
     userTimeout = setTimeout(function(){
-      alert('fail');
-      loopGame(null);
+      showAndHandleError();
     }, userTime);
   }
 
@@ -160,7 +175,7 @@ function initVars() {
   });
 }
 
-  function highlightForTeaching(SVGElem, index) {
+  function highlightForTeaching(SVGElem) {
     console.log("highlightForTeaching");
     console.log(SVGElem + " highlighted");
     changePadColor(SVGElem);
@@ -195,25 +210,48 @@ function initVars() {
     }
   }
 
-  function showError() {
-    // Flash all the 4 colours at the same time. Twice.
+  function showAndHandleError() {
+    userEnabled = false;
+
+    var highLightFrequency = 1000;
+    var highLowPeriod = 400;
+    var numOfFlashes = 3;
+    // Flash all the 4 colours at the same time. Three times.
     var pads = document.getElementsByClassName('pad');
-    for(var j = 0; j < 2; ++j) {
-    setTimeout('highAndLowLightAll', (j + 1) * 500);
+    for(var j = 0; j < numOfFlashes; ++j) {
+    setTimeout(highlightAll, (j + 1) * highLightFrequency);
+    setTimeout(lowlightAll, (j + 1) * highLightFrequency + highLowPeriod);
     }
 
-    function highAndLowLightAll() {
+    var restartTimeout = numOfFlashes * highLightFrequency + 2 * highLowPeriod;
+
+    if(strictMode === false) {
+      setTimeout(function() {
+        currentPatternIndex = 0;
+        loopGame(null);
+      }, restartTimeout);
+    } else {
+      setTimeout(startGame, restartTimeout);
+    }
+
+    function highlightAll() {
       for (var i = 0; i < pads.length; ++i) {
+        // Set the isOn attribute to false so that the first flash is to highlight all the pads.
         pads[i].setAttribute('ison', 'false');
+
+        // Change pad colours
         changePadColor(pads[i]);
-        setTimeout(function() {
-          LowLightSingle(pads[i]);
-        }, 500);
       }
     }
 
-    function LowLightSingle(pad) {
-      changePadColor(pad);
+    function lowlightAll() {
+      for (var i = 0; i < pads.length; ++i) {
+        // Set the isOn attribute to true so that the first flash is to lowlight all the pads.
+        pads[i].setAttribute('ison', 'true');
+
+        // Change pad colours
+        changePadColor(pads[i]);
+      }
     }
   }
   // TO DO - Sound
